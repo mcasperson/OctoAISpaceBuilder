@@ -99,6 +99,16 @@ provider_full_name_not_octopus[msg] if {
     msg := "provider_config.octopusdeploy.full_name must be 'registry.opentofu.org/octopusdeploy/octopusdeploy'"
 }
 
+# Don't allow any provisioners (local-exec, remote-exec, file etc.) on any resource,
+# including resources defined in nested modules
+has_provisioners[msg] if {
+    [path, value] := walk(input.configuration)
+    path[count(path)-1] == "provisioners"
+    provisioner := value[_]
+    msg := sprintf("Provisioners are not allowed. Found provisioner of type '%v' at %v",
+                  [provisioner.type, path])
+}
+
 # This is the combined rule we want to check
 allow if {
 	count(affects_non_octopusdeploy_resources) == 0
@@ -106,4 +116,5 @@ allow if {
 	count(multiple_providers) == 0
 	count(not_octopus_provider) == 0
 	count(provider_full_name_not_octopus) == 0
+	count(has_provisioners) == 0
 }
