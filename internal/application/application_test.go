@@ -14,7 +14,7 @@ import (
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/files"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/logging"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/model"
-	"github.com/OctopusSolutionsEngineering/OctopusTerraformTestFramework/test"
+	"github.com/OctopusSolutionsEngineering/OctopusTerraformTestFramework/v2/test"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )

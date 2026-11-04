@@ -1,12 +1,13 @@
 package terraform
 
 import (
+	"strings"
+	"testing"
+
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/environment"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/files"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"strings"
-	"testing"
 )
 
 func TestGenerateTerraformRC(t *testing.T) {
@@ -42,10 +43,11 @@ func TestGenerateTerraformRC(t *testing.T) {
 func TestGenerateOverrides(t *testing.T) {
 	// Call the function under test
 	result := GenerateOverrides()
+	providerVersion := environment.GetTerraformProviderVersion()
 
 	// Verify the content
 	assert.Contains(t, result, "required_providers {", "Should contain required_providers section")
-	assert.Contains(t, result, "octopusdeploy = { source = \"OctopusDeploy/octopusdeploy\", version = \""+TerraformProviderVersion+"\" }",
+	assert.Contains(t, result, "octopusdeploy = { source = \"OctopusDeploy/octopusdeploy\", version = \""+providerVersion+"\" }",
 		"Should contain correct octopusdeploy provider definition")
 	assert.Contains(t, result, "required_version = \">= 1.6.0\"", "Should contain minimum Terraform version")
 
@@ -54,8 +56,8 @@ func TestGenerateOverrides(t *testing.T) {
 	assert.GreaterOrEqual(t, len(lines), 5, "Should contain at least 5 lines")
 
 	// Verify the provider version matches the constant
-	assert.Contains(t, result, "version = \""+TerraformProviderVersion+"\"",
-		"Provider version should match TerraformProviderVersion constant")
+	assert.Contains(t, result, "version = \""+providerVersion+"\"",
+		"Provider version should match environment.GetTerraformProviderVersion")
 }
 
 func TestGenerateStateFile(t *testing.T) {

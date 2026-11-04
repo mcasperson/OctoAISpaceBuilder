@@ -102,3 +102,9 @@ func GetEnhancedLoggingInstances() []string {
 func GetPersistEnhancedLogs() bool {
 	return strings.ToLower(os.Getenv("PERSIST_ENHANCED_LOGS")) == "true"
 }
+
+// GetLogFilePath returns the path to the log file, or an empty string if file logging is disabled.
+// Set the SPACEBUILDER_LOG_FILE environment variable to enable file logging (e.g. /var/log/spacebuilder.log).
+func GetLogFilePath() string {
+	return os.Getenv("SPACEBUILDER_LOG_FILE")
+}

@@ -17,8 +17,8 @@ RUN curl -L -o binaries/opa_linux_amd64 https://github.com/open-policy-agent/opa
 RUN chmod +x binaries/opa_linux_amd64
 RUN curl -L -o binaries/tofu https://github.com/OctopusSolutionsEngineering/opentofu/releases/download/v1.10.6.3/tofu
 RUN chmod +x binaries/tofu
-RUN mkdir -p provider/registry.opentofu.org/octopusdeploy/octopusdeploy/1.8.0/linux_amd64
-RUN cp terraform-provider-octopusdeploy/terraform-provider-octopusdeploy functions/provider/registry.opentofu.org/octopusdeploy/octopusdeploy/1.8.0/linux_amd64/terraform-provider-octopusdeploy_v1.8.0
+RUN mkdir -p provider/registry.opentofu.org/octopusdeploy/octopusdeploy/1.18.2/linux_amd64
+RUN cp terraform-provider-octopusdeploy/terraform-provider-octopusdeploy functions/provider/registry.opentofu.org/octopusdeploy/octopusdeploy/1.18.2/linux_amd64/terraform-provider-octopusdeploy_v1.18.2
 
 FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=builder /go/src/app .

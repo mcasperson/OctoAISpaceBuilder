@@ -3,7 +3,6 @@ package validation
 import (
 	"errors"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/environment"
-	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/terraform"
 	"os"
 	"path/filepath"
 )
@@ -16,14 +15,16 @@ func TestFileSystemProviderInstallation() error {
 		return err
 	}
 
+	providerVersion := environment.GetTerraformProviderVersion()
+
 	octopusProvidersDir := filepath.Join(
 		providerPath,
 		"registry.opentofu.org",
 		"octopusdeploy",
 		"octopusdeploy",
-		terraform.TerraformProviderVersion,
+		providerVersion,
 		"linux_amd64",
-		"terraform-provider-octopusdeploy_v"+terraform.TerraformProviderVersion)
+		"terraform-provider-octopusdeploy_v"+providerVersion)
 
 	if _, err := os.Stat(octopusProvidersDir); os.IsNotExist(err) {
 		return errors.New("directory " + octopusProvidersDir + " does not exist")

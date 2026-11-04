@@ -53,3 +53,4 @@ main
 cmd/web/__debug_bin*
 
 *.log
+*.tf

@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/jsonapi"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/application/responses"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/handler"
+	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/logging"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/model"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -33,7 +34,9 @@ func CreateTerraformAutoApply(c *gin.Context) {
 
 	server, token, apiKey, err := getServerTokenApiKey(c)
 
-	response, err := handler.CreateTerraformPlan(server, token, apiKey, terraformInput)
+	response, err, output := handler.CreateTerraformPlan(server, token, apiKey, terraformInput)
+
+	logging.SaveEnhancedLogs("plan", output, server, err == nil)
 
 	if err != nil {
 		zap.L().Error("Failed to create Terraform plan", zap.Error(err))

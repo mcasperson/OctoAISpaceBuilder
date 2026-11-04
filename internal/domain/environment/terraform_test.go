@@ -13,7 +13,7 @@ func TestGetDisableTerraformCliConfig(t *testing.T) {
 
 	// Clean up after the test
 	defer func() {
-		os.Setenv("SPACEBUILDER_DISABLE_TERRAFORM_CLI_CONFIG", originalValue)
+		assert.NoError(t, os.Setenv("SPACEBUILDER_DISABLE_TERRAFORM_CLI_CONFIG", originalValue))
 	}()
 
 	tests := []struct {
@@ -46,7 +46,7 @@ func TestGetDisableTerraformCliConfig(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Set environment variable for this test case
-			os.Setenv("SPACEBUILDER_DISABLE_TERRAFORM_CLI_CONFIG", tt.envValue)
+			assert.NoError(t, os.Setenv("SPACEBUILDER_DISABLE_TERRAFORM_CLI_CONFIG", tt.envValue))
 
 			// Call the function under test
 			result := GetDisableTerraformCliConfig()
@@ -55,4 +55,8 @@ func TestGetDisableTerraformCliConfig(t *testing.T) {
 			assert.Equal(t, tt.expectedResult, result)
 		})
 	}
+}
+
+func TestGetTerraformProviderVersion(t *testing.T) {
+	assert.Equal(t, "1.18.2", GetTerraformProviderVersion())
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 
@@ -118,7 +119,7 @@ func CreateTerraformApply(server string, token string, apiKey string, terraformA
 	logging.LogEnhanced(stderr, server)
 
 	if err != nil {
-		return nil, err, stdout + "\n" + stderr
+		return nil, errors.New("Failed to generate plan: " + stderr + " " + stdout + " " + err.Error()), stdout + "\n" + stderr
 	}
 
 	if err := infrastructure.DeletePlanAzureStorageBlob(terraformApply.PlanId); err != nil {

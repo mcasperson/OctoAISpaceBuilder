@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/jsonapi"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/application/responses"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/handler"
+	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/logging"
 	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/model"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -71,6 +72,8 @@ func createTerraformApply(server, token, apiKey string, terraform model.Terrafor
 	if err != nil && handler.IsFlakyNetworkError(output) && retry < 2 {
 		return createTerraformApply(server, token, apiKey, terraform, retry+1)
 	}
+
+	logging.SaveEnhancedLogs("apply", output, server, err == nil)
 
 	return response, err
 }

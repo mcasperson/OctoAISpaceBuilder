@@ -1,9 +1,12 @@
 package logging
 
 import (
+	"os"
+
+	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/environment"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"os"
+	"gopkg.in/lumberjack.v2"
 )
 
 func ConfigureZapLogger() {
@@ -14,12 +17,35 @@ func ConfigureZapLogger() {
 	encoderConfig.LevelKey = "level"
 	encoderConfig.MessageKey = "message"
 
-	// Create a core with a console encoder for plain text output
-	core := zapcore.NewCore(
-		zapcore.NewConsoleEncoder(encoderConfig), // Plain text encoder
-		zapcore.Lock(os.Stdout),                  // Output to stdout
-		zapcore.InfoLevel,                        // Minimum log level
+	encoder := zapcore.NewConsoleEncoder(encoderConfig)
+
+	// Always write to stdout
+	stdoutCore := zapcore.NewCore(
+		encoder,
+		zapcore.Lock(os.Stdout),
+		zapcore.InfoLevel,
 	)
+
+	core := zapcore.Core(stdoutCore)
+
+	// Optionally tee to a rotating file when SPACEBUILDER_LOG_FILE is set
+	if logFilePath := environment.GetLogFilePath(); logFilePath != "" {
+		rotatingFile := &lumberjack.Logger{
+			Filename:   logFilePath,
+			MaxSize:    100,  // megabytes before rotation
+			MaxBackups: 5,    // number of old log files to keep
+			MaxAge:     28,   // days to keep old log files
+			Compress:   true, // gzip rotated files
+		}
+
+		fileCore := zapcore.NewCore(
+			encoder,
+			zapcore.AddSync(rotatingFile),
+			zapcore.InfoLevel,
+		)
+
+		core = zapcore.NewTee(stdoutCore, fileCore)
+	}
 
 	// Replace the global logger with the configured logger
 	logger := zap.New(core)

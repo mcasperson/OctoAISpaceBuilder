@@ -43,6 +43,7 @@ func main() {
 	zap.L().Info("OPA policy path: " + fmt.Sprint(environment.GetOpaPolicyPath()))
 	zap.L().Info("Tofu providers path: " + fmt.Sprint(environment.GetTerraformProvidersPath()))
 	zap.L().Info("Tofu executable: " + fmt.Sprint(tofu))
+	zap.L().Info("Tofu provider version: " + environment.GetTerraformProviderVersion())
 	zap.L().Info("Disable setting binary execution flag: " + fmt.Sprint(environment.DisableMakeBinariesExecutable()))
 	zap.L().Info("Disable Terraform config: " + fmt.Sprint(environment.GetDisableTerraformCliConfig()))
 	zap.L().Info("Enhanced logging instance: " + fmt.Sprint(environment.GetEnhancedLoggingInstances()))

@@ -1,10 +1,19 @@
 package environment
 
 import (
-	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/files"
 	"os"
 	"strings"
+
+	"github.com/OctopusSolutionsEngineering/OctoAISpaceBuilder/internal/domain/files"
 )
+
+/*
+This version must be updated:
+* In the build.yaml file
+* In the Dockerfile
+* In the functions/provider/registry.opentofu.org/octopusdeploy/octopusdeploy directory
+*/
+const terraformProviderVersion = "1.18.2"
 
 func GetDisableTerraformCliConfig() bool {
 	// Check if the environment variable is set to "true"
@@ -14,6 +23,14 @@ func GetDisableTerraformCliConfig() bool {
 
 	// Default to false if the environment variable is not set or not "true"
 	return false
+}
+
+func GetTerraformProviderVersion() string {
+	if os.Getenv("SPACEBUILDER_TERRAFORM_PROVIDER_VERSION") != "" {
+		return os.Getenv("SPACEBUILDER_TERRAFORM_PROVIDER_VERSION")
+	}
+
+	return terraformProviderVersion
 }
 
 func GetTerraformProvidersPath() string {
