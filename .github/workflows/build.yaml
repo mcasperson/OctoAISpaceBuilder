@@ -33,11 +33,6 @@ jobs:
       - name: Start Azurite
         run: docker run -d -p 10000:10000 -p 10001:10001 -p 10002:10002 --restart unless-stopped mcr.microsoft.com/azure-storage/azurite azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
         shell: bash
-      - name: Login to Octopus Deploy
-        uses: OctopusDeploy/login@v1
-        with:
-          server: https://mattc.octopus.app
-          service_account_id: ad1576ef-b053-4c85-b983-c0607045ae1f
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -175,26 +170,6 @@ jobs:
         with:
           tag_name: ${{ steps.determine_version.outputs.semVer }}+${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }}
           files: functions/spacebuilder_linux_amd64_azure.zip
-      - name: Push packages to Octopus Deploy
-        if: ${{ steps.branch-name.outputs.current_branch == 'main' }}
-        uses: OctopusDeploy/push-package-action@v3
-        env:
-          OCTOPUS_URL: https://mattc.octopus.app
-          OCTOPUS_SPACE: "Octopus Copilot"
-        with:
-          packages: functions/spacebuilder_azure.${{ steps.determine_version.outputs.semVer }}+${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }}.zip
-          overwrite_mode: OverwriteExisting
-      - name: Create Octopus Release
-        if: ${{ steps.branch-name.outputs.current_branch == 'main' }}
-        uses: OctopusDeploy/create-release-action@v3
-        env:
-          OCTOPUS_URL: https://mattc.octopus.app
-          OCTOPUS_SPACE: "Octopus Copilot"
-        with:
-          project: Octopus SpaceBuilder Function
-          packages: octoterra_azure:${{ steps.determine_version.outputs.semVer }}+${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }}
-          release_number: ${{ steps.determine_version.outputs.semVer }}+${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }}
-          git_ref: main
       - name: Archive code coverage results
         if: always()
         uses: actions/upload-artifact@v4
