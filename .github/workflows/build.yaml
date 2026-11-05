@@ -121,7 +121,12 @@ jobs:
           files: results.xml
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/octopussolutionsengineering/spacebuilder:${{ steps.determine_version.outputs.semVer }}-${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }} .
+        # The GITHUB_TOKEN can only push packages to the repository owner's namespace,
+        # so the image is published under the (lowercased) owner of this repository.
+        run: |
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/spacebuilder:${{ steps.determine_version.outputs.semVer }}-${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }}"
+          echo "IMAGE=${IMAGE}" >> "$GITHUB_ENV"
+          docker build -t "${IMAGE}" .
         shell: bash
 
       - name: Log in to GHCR
@@ -129,7 +134,7 @@ jobs:
         shell: bash
 
       - name: Push Docker image to GHCR
-        run: docker push ghcr.io/octopussolutionsengineering/spacebuilder:${{ steps.determine_version.outputs.semVer }}-${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }}
+        run: docker push "${IMAGE}"
         shell: bash
 
       - name: Build patched version of TF provider
